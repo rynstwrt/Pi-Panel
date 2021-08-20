@@ -1,28 +1,43 @@
 <html>
 <head>
+	<!-- GOOGLE FONTS -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Source+Sans+Pro:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+	<!-- FONT AWESOME -->
+	<script src="https://kit.fontawesome.com/d1ed772a88.js" crossorigin="anonymous"></script>
+
+	<!-- OTHER CSS -->
 	<link rel="stylesheet" type="text/css" href="style.css">  
 </head>
 <body>
-	<div id="container">
-		<div id="row">
-			<h2 id="time">00:00:00</h2>
-			<div id="util-buttons">
-				<img id="refresh-button" src="assets/refreshicon.png">
-				<img id="exit-button" src="assets/exiticon.png">
-			</div>
+	
+	<div id="left-panel">
+		<h1 id="time"></h1>
+
+		<p id="date"></p>
+
+		<div id="menu-buttons">
+			<i id="exit-button" class="fas fa-times"></i>
+			<i id="reload-button" class="fas fa-redo-alt"></i>
 		</div>
-		
-		<h3 id="date">January 1st, 0000</h3>
-		
-		<div id="button-container"></div>
 	</div>
 
-	<script src="headerbuttons.js"></script>
+	<div id="right-panel">
+		<!-- <div class="button">
+			<i class="fas fa-headphones-alt"></i>
+			<p>SPECTRUM ANALYZER</p>
+		</div>
+		<div class="button">
+			<i class="fas fa-headphones-alt"></i>
+			<p>WAVES</p>
+		</div> -->
+	</div>
+	
 	<script src="timeanddate.js"></script>
-	<script src="buttons.js"></script>
+	<script src="exitandreloadbuttons.js"></script>
+	<script src="buttonloader.js"></script>
 </body>
 
 </html>

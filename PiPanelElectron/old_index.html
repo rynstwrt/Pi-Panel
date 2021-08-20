@@ -1,0 +1,46 @@
+<html>
+<head>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Source+Sans+Pro:ital,wght@0,600;1,400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="style.css">  
+</head>
+<body>
+	<header>
+		<div id="top-row">
+			<h2 id="time">00:00:00</h2>
+			<div id="util-buttons">
+				<img id="refresh-button" src="assets/refreshicon.png">
+				<img id="exit-button" src="assets/exiticon.png">
+			</div>
+		</div>
+		
+		<h3 id="date">January 1st, 0000</h3>
+	</header>
+
+	
+	<div id="container">
+		<div class="half">
+			<div id="button-grid">
+				<!-- <button>------------</button>
+				<button>------------</button>
+				<button>------------</button>
+				<button>------------</button>
+				<button>------------</button>
+				<button>------------</button>
+				<button>------------</button>
+				<button>------------</button> -->
+			</div>
+		</div>
+		<div class="half">
+			<!-- <img src="assets/raspiascii.png"> -->
+			<p id="terminal"></p><span id="typed"></span>
+		</div>
+	</div>
+
+	<script src="headerbuttons.js"></script>
+	<script src="timeanddate.js"></script>
+	<script src="buttons.js"></script>
+</body>
+
+</html>

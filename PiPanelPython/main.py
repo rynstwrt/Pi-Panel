@@ -13,6 +13,8 @@ buttons = {
     "equalizer": programs.program_equalizer,
     "trippy": programs.program_trippy,
     "monitor": programs.program_monitor,
+    "modified sine": programs.program_modified_sine,
+    "waveform": programs.program_waveform,
     "spectrum analyzer": programs.program_spectrum_analyzer
 }
 
@@ -26,7 +28,7 @@ def get_buttons():
 @app.route("/setprogram", methods=["POST"])
 def set_program():
     data = request.data
-    program_name = json.loads(data)["program"]
+    program_name = json.loads(data)["program"].lower()
     buttons[program_name]()
     return program_name
 

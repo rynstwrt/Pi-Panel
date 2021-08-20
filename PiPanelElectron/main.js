@@ -29,7 +29,7 @@ function createWindow () {
         app.exit(0)
     })
 
-    ipcMain.handle("refresh-button-clicked", () =>
+    ipcMain.handle("reload-button-clicked", () =>
     {
         win.reload()
     })

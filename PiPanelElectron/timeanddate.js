@@ -10,7 +10,6 @@ function getFormattedTime()
     const time = new Date()
     let h = time.getHours()
     let m = time.getMinutes()
-    let s = time.getSeconds()
 
     if (h > 12) h -= 12
     if (h == 0) h = 12
@@ -18,9 +17,7 @@ function getFormattedTime()
 
     if (m < 10) m = "0" + m
 
-    if (s < 10) s = "0" + s
-
-    return `${h}:${m}:${s}`
+    return `${h}:${m}`
 }
 
 
@@ -30,9 +27,8 @@ function getFormattedDate()
     const day = days[time.getDay()]
     const month = months[time.getMonth()]
     const date = time.getDate()
-    const year = time.getFullYear()
 
-    return `${day}, ${month} ${date}, ${year}`
+    return `${day}, ${month} ${date}`
 }
 
 
@@ -40,4 +36,4 @@ setInterval(() =>
 {
     dateElem.textContent = getFormattedDate()
     timeElem.textContent = getFormattedTime()
-}, 1000)
+}, 2000)
