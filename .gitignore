@@ -14,5 +14,5 @@ pids
 # Dependency directories
 node_modules/
 
-PiPanelPython/assets/trippy.mp4
-PiPanelPython/assets/trippy.mp4
+# Large video files
+assets/trippy.mp4

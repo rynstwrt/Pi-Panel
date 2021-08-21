@@ -1,0 +1,53 @@
+QWidget#centralWidget
+{
+    background-color: "#273036";
+    background-image: url("assets/backgroundsplit.jpg");
+}
+
+QLabel
+{
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+    color: white;
+    text-transform: uppercase;
+}
+
+QLabel#time
+{
+    font-size: 130px;
+    margin-top: 50px;
+    font-weight: bold;
+}
+
+QLabel#date
+{
+    font-size: 40px;
+}
+
+QPushButton
+{
+    color: white;
+    background-color: "#171e22";
+    font-size: 30px;
+}
+
+QPushButton#exit
+{
+    max-width: 40px;
+    font-size: 25px;
+    background-color: transparent;
+    border: none;
+    margin: 15px 10px;
+}
+
+QPushButton[isProgramButton="true"]
+{
+    min-height: 100px;
+    min-width: 241px;
+    text-transform: uppercase;
+    text-align: center;
+    font-family: Helvetica, sans-serif;
+    background-color: #323d44;
+    border: none;
+    margin-top: 15px;
+}
