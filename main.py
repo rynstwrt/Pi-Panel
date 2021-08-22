@@ -3,7 +3,7 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 from PyQt5.QtCore import Qt, QFile, QTextStream, QDate, QTime, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QHBoxLayout, QVBoxLayout, QWidget, QLabel, QScrollArea, QSizePolicy, QGridLayout
 from PyQt5.QtGui import QPalette
-from program import Program
+from util.program import Program
 import programs
 
 
@@ -14,7 +14,7 @@ BUTTON_PROGRAMS = [
     Program("camera", programs.camera),
     Program("edge\ndetection", programs.edge_detection),
     Program("monitor", programs.monitor),
-    Program("trippy", programs.trippy),
+    Program("bunny\nvideo", programs.bunny_video),
     Program("modified\nsine", programs.modified_sine),
     Program("waveform", programs.waveform),
     Program("spectrum\nanalyzer", programs.spectrum_analyzer)
