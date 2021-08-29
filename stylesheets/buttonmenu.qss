@@ -1,0 +1,25 @@
+QWidget
+{
+    background-color: "#273036";
+}
+
+QPushButton#exit
+{
+    max-width: 40px;
+    font-size: 25px;
+    background-color: transparent;
+    border: none;
+    margin: 15px 10px;
+    color: white;
+}
+
+QPushButton[isContentButton="true"]
+{
+    background-color: #323d44;
+    border: none;
+    font-size: 25px;
+    color: white;
+    text-transform: uppercase;
+    min-height: 100px;
+    max-width: 300px;
+}

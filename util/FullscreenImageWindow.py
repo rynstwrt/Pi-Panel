@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QWidget, QLabel, QHBoxLayout
 from PyQt5.QtGui import QIcon, QPixmap
 from util.ImageLabel import ImageLabel
@@ -9,6 +10,7 @@ class FullscreenImageWindow(QWidget):
         super(FullscreenImageWindow, self).__init__()
         
         self.showFullScreen()
+        self.setCursor(Qt.BlankCursor)
 
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)

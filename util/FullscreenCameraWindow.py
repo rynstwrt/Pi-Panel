@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QApplication, QLabel, QHBoxLayout
 from PyQt5.QtGui import QPixmap, QColor, QImage
 import numpy as np
 import cv2
+from time import sleep
 from util.VideoCapture import VideoCapture
 from util.ImageLabel import ImageLabel
 
@@ -22,22 +23,26 @@ class VideoThread(QThread):
         if self.use_default_video_capture:
             cap = cv2.VideoCapture(self.device_index)
 
-            while self._should_run:
-                ret, frame = cap.read()
+            try:
+                while self._should_run:
+                    ret, frame = cap.read()
 
-                if ret:
-                    self.change_pixmap_signal.emit(frame)
+                    if ret:
+                        self.change_pixmap_signal.emit(frame)
 
-            cap.release()
+                    sleep(1.0 / cap.get(cv2.CAP_PROP_FPS))
+            finally:
+                cap.release()
         else:
             cap = VideoCapture(self.device_index)
 
-            while self._should_run:
-                frame = cap.read()
-                frame = frame if self.manipulation_function is None else self.manipulation_function(frame)
-                self.change_pixmap_signal.emit(frame)
-
-            cap.release()
+            try:
+                while self._should_run:
+                    frame = cap.read()
+                    frame = frame if self.manipulation_function is None else self.manipulation_function(frame)
+                    self.change_pixmap_signal.emit(frame)
+            finally:
+                cap.release()
 
 
     def stop(self):
@@ -51,6 +56,7 @@ class FullscreenCameraWindow(QWidget):
         super(FullscreenCameraWindow, self).__init__()
         
         self.showFullScreen()
+        self.setCursor(Qt.BlankCursor)
 
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)

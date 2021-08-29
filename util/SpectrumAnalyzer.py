@@ -1,4 +1,6 @@
 import pyaudio
+import matplotlib
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import numpy as np

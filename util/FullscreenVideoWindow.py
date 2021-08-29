@@ -11,24 +11,27 @@ from time import sleep
 class VideoThread(QThread):
     change_pixmap_signal = pyqtSignal(np.ndarray)
 
-    def __init__(self, url, fps):
+    def __init__(self, url):
         super(VideoThread, self).__init__()
         self.url = url
-        self.fps = fps
         self._should_run = True
 
 
     def run(self):
         cap = cv2.VideoCapture(self.url)
 
-        while self._should_run:
-            ret, frame = cap.read()
+        try:
+            while self._should_run:
+                ret, frame = cap.read()
 
-            if ret:
+                if not ret:
+                    cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    ret, frame = cap.read()
+                
                 self.change_pixmap_signal.emit(frame)
-
-            sleep(1.0 / self.fps)
-        cap.release()
+                sleep(1.0 / cap.get(cv2.CAP_PROP_FPS))
+        finally:
+            cap.release()
    
 
     def stop(self):
@@ -38,7 +41,7 @@ class VideoThread(QThread):
 
 
 class FullscreenVideoWindow(QWidget):
-    def __init__(self, url, fps=30):
+    def __init__(self, url):
         super(FullscreenVideoWindow, self).__init__()
         
         self.showFullScreen()
@@ -55,7 +58,7 @@ class FullscreenVideoWindow(QWidget):
         layout.addWidget(self.label)
         self.setLayout(layout)
 
-        self.thread = VideoThread(url, fps)
+        self.thread = VideoThread(url)
         self.thread.change_pixmap_signal.connect(self.update_image)
         self.thread.start()
 

@@ -17,11 +17,27 @@ QLabel#time
     font-size: 130px;
     margin-top: 50px;
     font-weight: bold;
+    max-width: 512px;
 }
 
 QLabel#date
 {
     font-size: 40px;
+    max-width: 512px;
+}
+
+QLabel#weathericon
+{
+    max-width: 50px;
+    max-height: 50px;
+    margin-top: 20px;
+}
+
+QLabel#temperature
+{
+    font-size: 40px;
+    margin-top: 20px;
+    margin-left: 10px;
 }
 
 QPushButton
@@ -43,11 +59,10 @@ QPushButton#exit
 QPushButton[isProgramButton="true"]
 {
     min-height: 100px;
-    min-width: 241px;
+    min-width: 220px;
     text-transform: uppercase;
     text-align: center;
     font-family: Helvetica, sans-serif;
     background-color: #323d44;
     border: none;
-    margin-top: 15px;
 }

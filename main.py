@@ -1,23 +1,28 @@
-import signal
-signal.signal(signal.SIGINT, signal.SIG_DFL)
 from PyQt5.QtCore import Qt, QFile, QTextStream, QDate, QTime, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QHBoxLayout, QVBoxLayout, QWidget, QLabel, QScrollArea, QSizePolicy, QGridLayout
-from PyQt5.QtGui import QPalette
+from PyQt5.QtGui import QPalette, QPixmap
 from util.program import Program
-import programs
+import signal
+signal.signal(signal.SIGINT, signal.SIG_DFL)
+from dotenv import Dotenv
+import programrouter
+import json
+from urllib.request import urlopen
+from urllib.error import HTTPError, URLError
+
+
+dotenv = Dotenv(".env")
 
 
 BUTTON_ROWS = 5
 BUTTON_COLS = 2
 BUTTON_PROGRAMS = [
-    Program("pride flag", programs.pride_flag),
-    Program("camera", programs.camera),
-    Program("edge\ndetection", programs.edge_detection),
-    Program("monitor", programs.monitor),
-    Program("bunny\nvideo", programs.bunny_video),
-    Program("modified\nsine", programs.modified_sine),
-    Program("waveform", programs.waveform),
-    Program("spectrum\nanalyzer", programs.spectrum_analyzer)
+    Program("image\nmenu", programrouter.image_menu),
+    Program("video\nmenu", programrouter.video_menu),
+    Program("computer\nvision", programrouter.computer_vision_menu),
+    Program("audio\nmenu", programrouter.audio_menu),
+    Program("drum\nmachine", programrouter.drum_machine),
+    Program("led\nmatrix", programrouter.led_matrix)
 ]
 
 
@@ -35,7 +40,7 @@ class MainWindow(QMainWindow):
         self.setObjectName("centralWidget")
 
         # Load the style sheet
-        style_sheet_file = QFile("styles.qss")
+        style_sheet_file = QFile("stylesheets/main.qss")
         style_sheet_file.open(QFile.ReadOnly | QFile.Text)
         style_stream = QTextStream(style_sheet_file)
         style_sheet = style_stream.readAll()
@@ -47,7 +52,8 @@ class MainWindow(QMainWindow):
         left_layout = QVBoxLayout()
         left_layout.setSpacing(0)
         self.right_layout = QGridLayout()
-        self.right_layout.setSpacing(0)
+        self.right_layout.setSpacing(15)
+        self.right_layout.setContentsMargins(15, 15, 15, 15)
 
         # Create the exit button
         exit_button = QPushButton("X")
@@ -62,7 +68,7 @@ class MainWindow(QMainWindow):
         self.time_label.setAlignment(Qt.AlignCenter)
         self.time_label.setContentsMargins(0, 0, 0, 0)
         left_layout.addWidget(self.time_label)
-        self.update_time_widget()
+        self.update_time()
         self.time_label.show()
 
         # Create the date
@@ -71,30 +77,61 @@ class MainWindow(QMainWindow):
         self.date_label.setAlignment(Qt.AlignCenter)
         self.date_label.setContentsMargins(0, 0, 0, 0)
         left_layout.addWidget(self.date_label)
-        self.update_date_widget()
+        self.update_date()
         self.date_label.show()
+
+        # Create the weather row (icon and temperature)
+        weather_row = QHBoxLayout()
+        weather_row.setSpacing(0)
+        weather_row.addStretch()
+
+        # Create the weather icon
+        self.weather_image = QLabel()
+        self.weather_image.setObjectName("weathericon")
+        self.weather_image.setAlignment(Qt.AlignCenter)
+        self.weather_image.setContentsMargins(0, 0, 0, 0)
+        self.weather_image.show()
+        weather_row.addWidget(self.weather_image)
+
+        # Create the temperature
+        self.temperature = QLabel()
+        self.temperature.setObjectName("temperature")
+        self.temperature.setAlignment(Qt.AlignCenter)
+        self.temperature.setContentsMargins(0, 0, 0, 0)
+        self.temperature.show()
+        weather_row.addWidget(self.temperature)
+
+        # Finish creating the weather row
+        weather_row.addStretch()
+        left_layout.addLayout(weather_row)
+        self.update_weather()
 
         # Make the left layout start at the top
         left_layout.addStretch()
 
         # Add layouts to the main layout
-        layout.addLayout(left_layout)
-        layout.addLayout(self.right_layout)
+        layout.addLayout(left_layout, stretch=1)
+        layout.addLayout(self.right_layout, stretch=1)
 
         # Set up container widget and set centralized widget
         container = QWidget()
         container.setLayout(layout)
         self.setCentralWidget(container)
 
-        # Create a timer for updating the time widget
+        # Create a timer for updating the time 
         self.time_timer = QTimer()
-        self.time_timer.timeout.connect(self.update_time_widget)
+        self.time_timer.timeout.connect(self.update_time)
         self.time_timer.start(5000)
 
-        # Create a timer for updating the date widget
+        # Create a timer for updating the date 
         self.date_timer = QTimer()
-        self.date_timer.timeout.connect(self.update_date_widget)
+        self.date_timer.timeout.connect(self.update_date)
         self.date_timer.start(5000)
+
+        # Create a timer for updating the weather row
+        self.weather_timer = QTimer()
+        self.weather_timer.timeout.connect(self.update_weather)
+        self.weather_timer.start(600000) # every 10 minutes
 
         # Create the program buttons
         self.create_buttons()
@@ -103,7 +140,7 @@ class MainWindow(QMainWindow):
         self.right_layout.setRowStretch(self.right_layout.rowCount(), 1)
 
 
-    def update_time_widget(self):
+    def update_time(self):
         current_time = QTime.currentTime()
         hour = current_time.hour()
         minutes = current_time.minute()
@@ -123,7 +160,7 @@ class MainWindow(QMainWindow):
         self.time_label.setText("{}:{}".format(hour, minutes))
 
 
-    def update_date_widget(self):
+    def update_date(self):
         current_date = QDate.currentDate().toString()
         split_date = current_date.split(" ")
         split_date.pop()
@@ -133,6 +170,27 @@ class MainWindow(QMainWindow):
 
         current_date = " ".join(split_date)
         self.date_label.setText(current_date)
+
+
+    def update_weather(self):
+        try:
+            api_key = dotenv["WEATHER_API_KEY"]
+            data = json.loads(urlopen("https://api.weatherbit.io/v2.0/current?city=Plano,TX&country=US&key={}&units=I".format(api_key)).read().decode("utf-8"))["data"][0]
+            
+            weather_icon_url = "https://www.weatherbit.io/static/img/icons/{}.png".format(data["weather"]["icon"])
+            temperature_string = "{}°F".format(round(data["temp"]))
+
+            icon_data = urlopen(weather_icon_url).read()
+            icon_pixmap = QPixmap(50, 50)
+            icon_pixmap.loadFromData(icon_data)
+            self.weather_image.setPixmap(icon_pixmap)
+            self.weather_image.setScaledContents(True)
+
+            self.temperature.setText(temperature_string)
+        except HTTPError:
+            pass
+        except URLError:
+            pass
 
 
     def create_buttons(self):
@@ -150,7 +208,7 @@ class MainWindow(QMainWindow):
                 button.show()
                 button.setProperty("isProgramButton", ["true"])
 
-                self.right_layout.addWidget(button, y, x, 1, 1, alignment=Qt.AlignHCenter)
+                self.right_layout.addWidget(button, y, x, alignment=Qt.AlignHCenter)
 
                 num_buttons += 1
 
